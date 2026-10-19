@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="260" height="190" viewBox="0 0 260 190" role="img" aria-label="portfolio-site">
+<style>
+text{font-family:ui-monospace, "SF Mono", "Cascadia Code", Consolas, Menlo, monospace}
+.blink{animation:b 1.1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+.scan{animation:s 6s linear infinite}
+@keyframes s{from{transform:translateX(-120px)}to{transform:translateX(260px)}}
+@media (prefers-reduced-motion:reduce){.blink,.scan{animation:none}}
+</style>
+
+<rect x="0.5" y="0.5" width="259" height="189" rx="8" fill="#0d1117" stroke="#30363d"/>
+<rect x="20" y="22" width="28" height="3" fill="#ffb454"/>
+<text x="20" y="52" fill="#e6edf3" font-size="17" font-weight="700">portfolio-site</text><text x="20" y="78" fill="#e6edf3" font-size="12.5" >Static Next.js site with MDX</text><text x="20" y="98" fill="#e6edf3" font-size="12.5" >content, light/dark themes</text><text x="20" y="118" fill="#e6edf3" font-size="12.5" >and CI link checks.</text>
+<text x="20" y="170" fill="#8b949e" font-size="11" >Next.js · MDX · Tailwind · Vercel</text>
+</svg>

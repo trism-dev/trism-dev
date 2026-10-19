@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="830" height="154" viewBox="0 0 830 154" role="img" aria-label="Tech stack">
+<style>
+text{font-family:ui-monospace, "SF Mono", "Cascadia Code", Consolas, Menlo, monospace}
+.blink{animation:b 1.1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+.scan{animation:s 6s linear infinite}
+@keyframes s{from{transform:translateX(-120px)}to{transform:translateX(830px)}}
+@media (prefers-reduced-motion:reduce){.blink,.scan{animation:none}}
+</style>
+<rect x="0.5" y="0.5" width="829" height="153" rx="8" fill="#f6f8fa" stroke="#d0d7de"/><text x="24" y="38" fill="#b35900" font-size="14" >languages </text><text x="116.4" y="38" fill="#1f2328" font-size="14" >Python  SQL  TypeScript  JavaScript  Java</text><text x="24" y="68" fill="#b35900" font-size="14" >data/ml   </text><text x="116.4" y="68" fill="#1f2328" font-size="14" >PostgreSQL  pandas  scikit-learn  XGBoost</text><text x="24" y="98" fill="#b35900" font-size="14" >web       </text><text x="116.4" y="98" fill="#1f2328" font-size="14" >React  Next.js  Tailwind  Streamlit</text><text x="24" y="128" fill="#b35900" font-size="14" >ops       </text><text x="116.4" y="128" fill="#1f2328" font-size="14" >Docker  Git  GitHub Actions  pytest  Vercel</text>
+</svg>
