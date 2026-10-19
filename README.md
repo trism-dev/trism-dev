@@ -3,7 +3,7 @@
 
 <picture><source media="(prefers-color-scheme: dark)" srcset="assets/dark/header.svg"><img src="assets/light/header.svg" alt="Tristan Morton: systems, security, data" width="100%"></picture>
 
-[`portfolio`](https://portfolio-site-trism2.vercel.app) · [`discord`](https://discord.com/users/543220135260061720)
+[`portfolio`](https://portfolio-site-trism2.vercel.app) · [`linkedin`](https://www.linkedin.com/in/tristan-morton) · [`discord`](https://discord.com/users/543220135260061720)
 
 </div>
 

@@ -57,6 +57,7 @@ const C = {
   ],
   links: [
     ["portfolio", "https://portfolio-site-trism2.vercel.app"],
+    ["linkedin", "https://www.linkedin.com/in/tristan-morton"],
     ["discord", "https://discord.com/users/543220135260061720"],
   ],
 };
