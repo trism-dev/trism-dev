@@ -29,8 +29,7 @@ export function renderReadme(latest = '<p>Latest public projects will appear her
 </picture>
 
 <p>
-  <a href="https://portfolio-site-trism2.vercel.app"><img src="assets/profile.svg" width="48%" alt="Portfolio Website"></a>
-  <a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="48%" alt="Repositories"></a>
+  <a href="https://portfolio-site-trism2.vercel.app"><img src="assets/profile.svg" width="50%" alt="Portfolio Website"></a><a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="50%" alt="Repositories"></a>
 </p>
 
 <!-- Introduction — Tristan will write this. -->
@@ -43,8 +42,9 @@ ${latest}
 
 ## Featured projects
 
-${featured.map((p, i) => `<details${i === 0 ? ' open' : ''}>
-<summary><picture><img src="assets/featured-${p.repo}.svg" width="280" alt="${p.name}"></picture></summary>
+${featured.map((p, i) => `<h3><a href="https://github.com/trism-dev/${p.repo}"><img src="assets/featured-${p.repo}.svg" width="330" alt="${p.name}"></a></h3>
+<details${i === 0 ? ' open' : ''}>
+<summary>Project details</summary>
 
 **${p.stack}**
 
