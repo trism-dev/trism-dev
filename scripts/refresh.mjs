@@ -1,6 +1,6 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { escapeHtml, latestSection, root } from './build.mjs';
+import { escapeHtml, latestSection, plaque, root } from './build.mjs';
 
 const owner = 'trism-dev';
 const excluded = new Set(['trism-dev', 'lore-tool-pages']);
@@ -57,7 +57,7 @@ const clean = (text, limit) => escapeHtml(text.replace(/[\u0000-\u001f\u007f]/g,
 
 export function renderLatest(repos) {
   if (!repos.length) return '<p>No public projects to show yet. <a href="https://github.com/trism-dev?tab=repositories">Browse repositories</a>.</p>';
-  return repos.map(repo => `<h3><a href="${repo.html_url}">${escapeHtml(repo.name)}</a></h3>\n${repo.language ? `<p><strong>${clean(repo.language, 80)}</strong></p>\n` : ''}${repo.description ? `<p>${clean(repo.description, 280)}</p>` : ''}`).join('\n\n');
+  return repos.map((repo, index) => `<h3><a href="${repo.html_url}"><img src="assets/latest-${index + 1}.svg" width="330" alt="${escapeHtml(repo.name)}"></a></h3>\n${repo.language ? `<p><strong>${clean(repo.language, 80)}</strong></p>\n` : ''}${repo.description ? `<p>${clean(repo.description, 280)}</p>` : ''}`).join('\n\n');
 }
 
 export async function refresh({ directory = root, fetcher = fetch, now } = {}) {
@@ -72,9 +72,11 @@ export async function refresh({ directory = root, fetcher = fetch, now } = {}) {
   const serialized = JSON.stringify(registry, null, 2) + '\n';
   const changes = [];
   // Finish the complete scan and validation before touching either tracked file.
-  for (const [path, content] of [[readmePath, output], [registryPath, serialized]]) {
+  const plaques = Array.from({ length: 3 }, (_, i) => [directory + `/assets/latest-${i + 1}.svg`, plaque(latest[i]?.name ?? '')]);
+  for (const [path, content] of [[readmePath, output], [registryPath, serialized], ...plaques]) {
     if (existsSync(path) && readFileSync(path, 'utf8').replaceAll('\r\n', '\n') === content) continue;
     mkdirSync(directory + '/data', { recursive: true });
+    mkdirSync(directory + '/assets', { recursive: true });
     writeFileSync(path + '.tmp', content);
     changes.push([path, path + '.tmp']);
   }
