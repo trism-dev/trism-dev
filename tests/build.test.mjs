@@ -31,6 +31,16 @@ test('navigation uses portfolio/repositories and every featured project has a pl
   }
 });
 
+test('project plaques align outside native disclosure markers and navigation fills its row', () => {
+  const output = renderReadme();
+  assert.equal((output.match(/width="50%"/g) || []).length, 2);
+  assert(!output.includes('</a>\n  <a'));
+  assert([...output.matchAll(/<summary>(.*?)<\/summary>/gs)].every(match => !match[1].includes('<img')));
+  for (const project of featured) {
+    assert(output.includes(`<a href="https://github.com/trism-dev/${project.repo}"><img src="assets/featured-${project.repo}.svg" width="330"`));
+  }
+});
+
 test('exported images have valid headers, dimensions and bounded size', () => {
   const png = readFileSync(root + 'assets/scene.png');
   assert.equal(png.subarray(1, 4).toString(), 'PNG');

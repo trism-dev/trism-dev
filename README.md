@@ -5,8 +5,7 @@
 </picture>
 
 <p>
-  <a href="https://portfolio-site-trism2.vercel.app"><img src="assets/profile.svg" width="48%" alt="Portfolio Website"></a>
-  <a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="48%" alt="Repositories"></a>
+  <a href="https://portfolio-site-trism2.vercel.app"><img src="assets/profile.svg" width="50%" alt="Portfolio Website"></a><a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="50%" alt="Repositories"></a>
 </p>
 
 <!-- Introduction — Tristan will write this. -->
@@ -29,8 +28,9 @@
 
 ## Featured projects
 
+<h3><a href="https://github.com/trism-dev/internship-scout-agent"><img src="assets/featured-internship-scout-agent.svg" width="330" alt="Internship Scout"></a></h3>
 <details open>
-<summary><picture><img src="assets/featured-internship-scout-agent.svg" width="280" alt="Internship Scout"></picture></summary>
+<summary>Project details</summary>
 
 **Python · FastAPI · PostgreSQL · Claude tool calling · GitHub Actions**
 
@@ -40,8 +40,9 @@ A resume-matching agent with a FastAPI web app. A scheduled Python job gathers i
 
 </details>
 
+<h3><a href="https://github.com/trism-dev/tripwire-awareness-dashboard"><img src="assets/featured-tripwire-awareness-dashboard.svg" width="330" alt="Tripwire"></a></h3>
 <details>
-<summary><picture><img src="assets/featured-tripwire-awareness-dashboard.svg" width="280" alt="Tripwire"></picture></summary>
+<summary>Project details</summary>
 
 **Python · Streamlit · PostgreSQL · Docker · GDELT**
 
@@ -51,8 +52,9 @@ A situational awareness dashboard backed by a Dockerized ingestion worker. It re
 
 </details>
 
+<h3><a href="https://github.com/trism-dev/docs-qa-copilot"><img src="assets/featured-docs-qa-copilot.svg" width="330" alt="Docs QA Copilot"></a></h3>
 <details>
-<summary><picture><img src="assets/featured-docs-qa-copilot.svg" width="280" alt="Docs QA Copilot"></picture></summary>
+<summary>Project details</summary>
 
 **TypeScript · Next.js · React · PostgreSQL / pgvector · Local embeddings · Claude**
 
