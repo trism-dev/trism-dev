@@ -1,46 +1,47 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { discover, fetchPublicRepos, refresh, renderLatest } from '../scripts/refresh.mjs';
+import { selectLatest, fetchPublicRepos, refresh, renderLatest } from '../scripts/refresh.mjs';
 import { renderReadme, latestSection } from '../scripts/build.mjs';
 
-const empty = () => ({ version: 1, seeded: false, repositories: {} });
-const repo = (id, overrides = {}) => ({ id, name: `project-${id}`, html_url: `https://github.com/trism-dev/project-${id}`, owner: { login: 'trism-dev' }, private: false, visibility: 'public', fork: false, archived: false, created_at: '2025-01-01T00:00:00Z', description: 'A public project.', language: 'JavaScript', ...overrides });
+const repo = (id, overrides = {}) => ({ id, name: `project-${id}`, html_url: `https://github.com/trism-dev/project-${id}`, owner: { login: 'trism-dev' }, private: false, visibility: 'public', fork: false, archived: false, created_at: '2025-01-01T00:00:00Z', pushed_at: '2025-01-01T00:00:00Z', description: 'A public project.', language: 'JavaScript', ...overrides });
 const response = (repos, link = '') => new Response(JSON.stringify(repos), { headers: { link } });
-const now = '2026-11-03T00:00:00.000Z';
 
-test('initial seed uses creation dates with deterministic ties', () => {
-  const { registry, latest } = discover([repo(1), repo(3), repo(2)], empty(), now);
-  assert.equal(registry.repositories[1], '2025-01-01T00:00:00.000Z');
-  assert.deepEqual(latest.map(r => r.id), [3, 2, 1]);
+test('latest projects are name-only buttons ordered by code push recency', () => {
+  const recent = repo(1, { pushed_at: '2026-11-03T09:00:00Z' });
+  const older = repo(2, { pushed_at: '2026-11-02T09:00:00Z' });
+  assert.deepEqual(selectLatest([older, recent]).map(r => r.id), [1, 2]);
+  const output = renderLatest([recent]);
+  assert(!output.includes('A public project.'));
+  assert(!output.includes('JavaScript'));
 });
 
-test('newly public older repository leads; pushes and renames keep original recency', () => {
-  const first = discover([repo(1)], empty(), now);
-  const next = discover([repo(1, { name: 'renamed', html_url: 'https://github.com/trism-dev/renamed', pushed_at: now }), repo(2, { created_at: '2020-01-01T00:00:00Z' })], first.registry, now);
-  assert.deepEqual(next.latest.map(r => r.id), [2, 1]);
-  assert.equal(next.registry.repositories[1], first.registry.repositories[1]);
-  const toggled = discover([repo(1)], discover([], next.registry, now).registry, now);
-  assert.equal(toggled.registry.repositories[1], first.registry.repositories[1]);
+test('at most three projects with deterministic ties', () => {
+  assert.deepEqual(selectLatest([repo(1), repo(3), repo(2), repo(4)]).map(r => r.id), [4, 3, 2]);
+});
+
+test('a new push to an older repo leads; creation and metadata edits do not affect recency', () => {
+  const edited = repo(1, { created_at: '2020-01-01T00:00:00Z', pushed_at: '2026-11-03T12:00:00Z' });
+  const renamed = repo(2, { name: 'renamed', html_url: 'https://github.com/trism-dev/renamed', created_at: '2026-11-03T12:00:00Z', updated_at: '2026-11-03T13:00:00Z' });
+  assert.deepEqual(selectLatest([renamed, edited]).map(r => r.id), [1, 2]);
+  assert.deepEqual(selectLatest([repo(3, { pushed_at: null })]), []);
 });
 
 test('only public owned eligible repositories show, featured repositories remain eligible', () => {
   const sample = [repo(1, { private: true }), repo(2, { archived: true }), repo(3, { fork: true }), repo(4, { owner: { login: 'elsewhere' } }), repo(5, { name: 'trism-dev', html_url: 'https://github.com/trism-dev/trism-dev' }), repo(6, { name: 'lore-tool-pages', html_url: 'https://github.com/trism-dev/lore-tool-pages' }), repo(7, { name: 'docs-qa-copilot', html_url: 'https://github.com/trism-dev/docs-qa-copilot' })];
-  const result = discover(sample, empty(), now);
-  assert.deepEqual(result.latest.map(r => r.id), [7]);
-  assert(!Object.hasOwn(result.registry.repositories, '1'));
-  const removed = discover([], result.registry, now);
-  assert.equal(removed.latest.length, 0);
-  assert.equal(removed.registry.repositories[7], result.registry.repositories[7]);
+  assert.deepEqual(selectLatest(sample).map(r => r.id), [7]);
+  assert.deepEqual(selectLatest([]), []);
 });
 
-test('public metadata is escaped, bounded and cannot inject HTML or Markdown', () => {
+test('descriptions and language are omitted entirely', () => {
   const text = renderLatest([repo(1, { description: '<script>alert("x")</script> & [click](javascript:evil)\n' + 'a'.repeat(400), language: '<b>JS</b>' })]);
   assert(!text.includes('<script>'));
   assert(!text.includes('<b>JS'));
-  assert(text.includes('&lt;script&gt;'));
+  assert(!text.includes('&lt;script&gt;'));
+  assert(!text.includes('<p>'));
+  assert(!text.includes('<strong>'));
   assert(!text.includes('a'.repeat(300)));
   assert(!renderLatest([repo(2, { description: null, language: null })]).includes('undefined'));
   assert(renderLatest([]).includes('No public projects'));
@@ -51,11 +52,10 @@ test('latest project links include the matching generated stone plaque', () => {
   assert(renderLatest([repo(1), repo(2)]).includes('src="assets/latest-2.svg"'));
 });
 
-test('invalid registry and repository metadata fail closed', () => {
-  assert.throws(() => discover([repo(1, { html_url: 'javascript:alert(1)' })], empty(), now));
-  assert.throws(() => discover([repo(1, { created_at: 'bad' })], empty(), now));
-  assert.throws(() => discover([repo(1), repo(1)], empty(), now));
-  assert.throws(() => discover([], { version: 1, seeded: true, repositories: { bad: now } }));
+test('invalid repository metadata fails closed', () => {
+  assert.throws(() => selectLatest([repo(1, { html_url: 'javascript:alert(1)' })]));
+  assert.throws(() => selectLatest([repo(1, { pushed_at: 'bad' })]));
+  assert.throws(() => selectLatest([repo(1), repo(1)]));
   assert.throws(() => latestSection('<!-- latest:start -->\na\n<!-- latest:end -->\n<!-- latest:start -->'));
 });
 
@@ -76,24 +76,22 @@ test('failed, malformed or repeated pages reject an incomplete scan', async () =
   await assert.rejects(fetchPublicRepos(async () => response([repo(1)], '<next>; rel="next"')), /repeated/);
 });
 
-test('complete refresh is stable; failure leaves README and registry byte-for-byte intact', async () => {
+test('refresh is stable, follows new pushes and preserves README/plaques on failure', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'profile-test-'));
-  mkdirSync(directory + '/data');
   writeFileSync(directory + '/README.md', renderReadme());
-  writeFileSync(directory + '/data/discovery.json', JSON.stringify(empty()));
-  const options = { directory, now, fetcher: async () => response([repo(1)]) };
+  const options = { directory, fetcher: async () => response([repo(1)]) };
   assert.equal(await refresh(options), true);
   const readme = readFileSync(directory + '/README.md', 'utf8');
-  const registry = readFileSync(directory + '/data/discovery.json', 'utf8');
   const plaque = readFileSync(directory + '/assets/latest-1.svg', 'utf8');
   assert(plaque.includes('project-1'));
-  assert.equal(await refresh({ ...options, now: '2026-11-04T00:00:00.000Z' }), false);
+  assert.equal(await refresh(options), false);
   let page = 0;
   await assert.rejects(refresh({ ...options, fetcher: async () => ++page === 1 ? response(Array.from({ length: 100 }, (_, i) => repo(i))) : new Response('', { status: 503 }) }), /HTTP 503/);
   assert.equal(readFileSync(directory + '/README.md', 'utf8'), readme);
-  assert.equal(readFileSync(directory + '/data/discovery.json', 'utf8'), registry);
   assert.equal(readFileSync(directory + '/assets/latest-1.svg', 'utf8'), plaque);
   assert.equal(readme, renderReadme(latestSection(readme)));
+  await refresh({ ...options, fetcher: async () => response([repo(1), repo(2, { pushed_at: '2026-11-03T12:00:00Z' })]) });
+  assert(readFileSync(directory + '/assets/latest-1.svg', 'utf8').includes('project-2'));
   await refresh({ ...options, fetcher: async () => response([]) });
-  assert(!readFileSync(directory + '/assets/latest-1.svg', 'utf8').includes('project-1'));
+  assert(readFileSync(directory + '/assets/latest-1.svg', 'utf8').includes('aria-label=""'));
 });
