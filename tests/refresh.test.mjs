@@ -46,6 +46,11 @@ test('public metadata is escaped, bounded and cannot inject HTML or Markdown', (
   assert(renderLatest([]).includes('No public projects'));
 });
 
+test('latest project links include the matching generated stone plaque', () => {
+  assert(renderLatest([repo(1), repo(2)]).includes('src="assets/latest-1.svg"'));
+  assert(renderLatest([repo(1), repo(2)]).includes('src="assets/latest-2.svg"'));
+});
+
 test('invalid registry and repository metadata fail closed', () => {
   assert.throws(() => discover([repo(1, { html_url: 'javascript:alert(1)' })], empty(), now));
   assert.throws(() => discover([repo(1, { created_at: 'bad' })], empty(), now));
@@ -80,10 +85,15 @@ test('complete refresh is stable; failure leaves README and registry byte-for-by
   assert.equal(await refresh(options), true);
   const readme = readFileSync(directory + '/README.md', 'utf8');
   const registry = readFileSync(directory + '/data/discovery.json', 'utf8');
+  const plaque = readFileSync(directory + '/assets/latest-1.svg', 'utf8');
+  assert(plaque.includes('project-1'));
   assert.equal(await refresh({ ...options, now: '2026-11-04T00:00:00.000Z' }), false);
   let page = 0;
   await assert.rejects(refresh({ ...options, fetcher: async () => ++page === 1 ? response(Array.from({ length: 100 }, (_, i) => repo(i))) : new Response('', { status: 503 }) }), /HTTP 503/);
   assert.equal(readFileSync(directory + '/README.md', 'utf8'), readme);
   assert.equal(readFileSync(directory + '/data/discovery.json', 'utf8'), registry);
+  assert.equal(readFileSync(directory + '/assets/latest-1.svg', 'utf8'), plaque);
   assert.equal(readme, renderReadme(latestSection(readme)));
+  await refresh({ ...options, fetcher: async () => response([]) });
+  assert(!readFileSync(directory + '/assets/latest-1.svg', 'utf8').includes('project-1'));
 });

@@ -10,13 +10,14 @@ export const featured = [
 
 export const escapeHtml = value => String(value).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-function plaque(label, width) {
+export function plaque(label, width = 400) {
+  const display = label.length > 35 ? label.slice(0, 34) + '…' : label;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="58" viewBox="0 0 ${width} 58" role="img" aria-label="${escapeHtml(label)}">
 <defs><linearGradient id="stone" x2="0" y2="1"><stop stop-color="#2b3d49"/><stop offset="1" stop-color="#1a2c38"/></linearGradient></defs>
 <path fill="url(#stone)" stroke="#728592" d="M.5.5h${width - 1}v57H.5z"/>
 <path fill="none" stroke="#101e29" stroke-width="3" d="M3 3h${width - 6}v52H3z"/><path fill="none" stroke="#4a6172" d="M4.5 4.5h${width - 9}v49H4.5z"/>
 <path fill="#a5b9c1" d="m14 26 3 3-3 3-3-3z m${width - 28} 0 3 3-3 3-3-3z"/>
-<text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-size="17" letter-spacing=".6" fill="#f0dfb8">${escapeHtml(label)}</text>
+<text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-size="17" letter-spacing=".6" fill="#f0dfb8">${escapeHtml(display)}</text>
 </svg>\n`;
 }
 
@@ -24,16 +25,12 @@ export function renderReadme(latest = '<p>Latest public projects will appear her
   return `<!-- Built by scripts/build.mjs. Edit the generator, then rebuild. -->
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/scene.png">
-  <img src="assets/scene.gif" width="100%" alt="Tristan Morton, trism-dev. A faceless hooded traveler drinks tea on a sheltered bench beside a sword and warm lantern, overlooking a rainy blue city.">
+  <img src="assets/scene.gif" width="100%" alt="Tristan Morton. A faceless hooded traveler drinks tea on a sheltered bench beside a sword and warm lantern, overlooking a rainy blue city.">
 </picture>
 
-# Tristan Morton
-
-[trism-dev](https://github.com/trism-dev)
-
 <p>
-  <a href="https://github.com/trism-dev"><img src="assets/profile.svg" width="48%" alt="GitHub profile"></a>
-  <a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="48%" alt="All projects"></a>
+  <a href="https://portfolio-site-trism2.vercel.app"><img src="assets/profile.svg" width="48%" alt="Portfolio Website"></a>
+  <a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="48%" alt="Repositories"></a>
 </p>
 
 <!-- Introduction — Tristan will write this. -->
@@ -47,7 +44,7 @@ ${latest}
 ## Featured projects
 
 ${featured.map((p, i) => `<details${i === 0 ? ' open' : ''}>
-<summary><strong>${p.name}</strong></summary>
+<summary><picture><img src="assets/featured-${p.repo}.svg" width="280" alt="${p.name}"></picture></summary>
 
 **${p.stack}**
 
@@ -69,8 +66,9 @@ export function latestSection(readme) {
 
 export function build(latest = existsSync(root + 'README.md') ? latestSection(readFileSync(root + 'README.md', 'utf8').replaceAll('\r\n', '\n')) : undefined) {
   mkdirSync(root + 'assets', { recursive: true });
-  writeFileSync(root + 'assets/profile.svg', plaque('GitHub profile', 400));
-  writeFileSync(root + 'assets/projects.svg', plaque('All projects', 400));
+  writeFileSync(root + 'assets/profile.svg', plaque('Portfolio Website'));
+  writeFileSync(root + 'assets/projects.svg', plaque('Repositories'));
+  for (const project of featured) writeFileSync(root + `assets/featured-${project.repo}.svg`, plaque(project.name));
   writeFileSync(root + 'README.md', renderReadme(latest));
 }
 
