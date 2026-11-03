@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { renderReadme, featured, root } from '../scripts/build.mjs';
+import { renderReadme, featured, root, latestSection } from '../scripts/build.mjs';
 import { readFileSync, statSync } from 'node:fs';
 
 test('native README keeps readable content and supported motion fallback', () => {
-  const output = renderReadme();
+  const readme = readFileSync(root + 'README.md', 'utf8').replaceAll('\r\n', '\n');
+  const output = renderReadme(latestSection(readme));
   assert(output.includes('# Tristan Morton'));
   assert(output.indexOf('## Latest projects') < output.indexOf('## Featured projects'));
   assert(output.includes('(prefers-reduced-motion: reduce)'));
@@ -14,7 +15,7 @@ test('native README keeps readable content and supported motion fallback', () =>
     assert(output.includes(`https://github.com/trism-dev/${p.repo}`));
   }
   assert(!/<script|<style|<canvas|2027|internship availability|Matter:/.test(output));
-  assert.equal(output, readFileSync(root + 'README.md', 'utf8'));
+  assert.equal(output, readme);
 });
 
 test('exported images have valid headers, dimensions and bounded size', () => {

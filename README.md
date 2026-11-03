@@ -18,7 +18,17 @@
 ## Latest projects
 
 <!-- latest:start -->
-<p>Latest public projects will appear here after the first successful refresh.</p>
+<h3><a href="https://github.com/trism-dev/docs-qa-copilot">docs-qa-copilot</a></h3>
+<p><strong>TypeScript</strong></p>
+<p>RAG app: answers questions over policy and benefits PDFs with page citations, plus an accuracy eval page</p>
+
+<h3><a href="https://github.com/trism-dev/internship-scout-agent">internship-scout-agent</a></h3>
+<p><strong>Python</strong></p>
+<p>Weekly agent that scores new internship postings against a resume with LLM tool calling and emails a digest</p>
+
+<h3><a href="https://github.com/trism-dev/portfolio-site">portfolio-site</a></h3>
+<p><strong>TypeScript</strong></p>
+
 <!-- latest:end -->
 
 ## Featured projects

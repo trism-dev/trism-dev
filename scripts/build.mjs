@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 export const root = fileURLToPath(new URL('../', import.meta.url));
@@ -61,7 +61,13 @@ ${p.text}
 `;
 }
 
-export function build(latest) {
+export function latestSection(readme) {
+  const match = readme.match(/<!-- latest:start -->\n([\s\S]*?)\n<!-- latest:end -->/);
+  if (!match || (readme.match(/<!-- latest:start -->/g) || []).length !== 1 || (readme.match(/<!-- latest:end -->/g) || []).length !== 1) throw new Error('Expected exactly one Latest projects section');
+  return match[1];
+}
+
+export function build(latest = existsSync(root + 'README.md') ? latestSection(readFileSync(root + 'README.md', 'utf8').replaceAll('\r\n', '\n')) : undefined) {
   mkdirSync(root + 'assets', { recursive: true });
   writeFileSync(root + 'assets/profile.svg', plaque('GitHub profile', 400));
   writeFileSync(root + 'assets/projects.svg', plaque('All projects', 400));
