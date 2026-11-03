@@ -4,8 +4,6 @@
   <img src="assets/scene.gif" width="100%" alt="Tristan Morton, trism-dev. A faceless hooded traveler drinks tea on a sheltered bench beside a sword and warm lantern, overlooking a rainy blue city.">
 </picture>
 
-[trism-dev](https://github.com/trism-dev)
-
 <p>
   <a href="https://github.com/trism-dev"><img src="assets/profile.svg" width="48%" alt="GitHub profile"></a>
   <a href="https://github.com/trism-dev?tab=repositories"><img src="assets/projects.svg" width="48%" alt="All projects"></a>
