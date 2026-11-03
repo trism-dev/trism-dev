@@ -1,0 +1,60 @@
+name: Profile
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main, docs/profile-refresh]
+    paths: ['scripts/**', 'tests/**', 'art/**', 'assets/**', 'data/**', 'README.md', '.github/workflows/profile.yml']
+  schedule:
+    - cron: '17 9 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - run: node --test
+      - run: node scripts/build.mjs
+      - run: git diff --exit-code -- README.md assets
+
+  refresh:
+    needs: check
+    if: github.repository == 'trism-dev/trism-dev' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - run: node scripts/refresh.mjs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: node --test
+      - name: Commit changed generated content
+        shell: bash
+        run: |
+          if git diff --quiet -- README.md data/discovery.json; then
+            echo 'No public project changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- README.md data/discovery.json
+          git commit -m 'chore: refresh latest public projects'
+          git push origin HEAD:main
