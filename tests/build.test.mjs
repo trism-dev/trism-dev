@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { renderReadme, featured, root, latestSection, plaque } from '../scripts/build.mjs';
 import { readFileSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 
 test('native README keeps readable content and supported motion fallback', () => {
   const readme = readFileSync(root + 'README.md', 'utf8').replaceAll('\r\n', '\n');
@@ -76,6 +77,22 @@ test('scene uses separate reusable sprites with an explicit integer pixel grid',
     assert(Number.isInteger(sprite.nativeHeight) && sprite.nativeHeight >= 72);
     assert.equal(sprite.y + sprite.nativeHeight * sprite.pixelScale, 744, 'Both sprites contact the floor');
   }
+});
+
+test('scene keeps the approved v2 benchmark sprites without resampling', () => {
+  const layout = JSON.parse(readFileSync(root + 'art/layers.json', 'utf8'));
+  const approved = [
+    [28, 74, '2c82eb6630a0ea472b64a34b6c39bb46765c1b8782adb41fa1903ccae8e447f4'],
+    [88, 100, '8df979a86f62086961c9f8153224c794c24837c4c477235ee1946bddbf237476'],
+  ];
+  layout.sprites.forEach((sprite, i) => {
+    const [width, height, hash] = approved[i], png = readFileSync(root + sprite.file);
+    assert.equal(createHash('sha256').update(png).digest('hex'), hash);
+    assert.equal(png.readUInt32BE(16), width);
+    assert.equal(png.readUInt32BE(20), height);
+    assert.deepEqual(sprite.crop, [0, 0, width, height]);
+    assert.equal(sprite.nativeHeight, height);
+  });
 });
 
 test('GIF contains 100 evenly timed 40ms frames', () => {

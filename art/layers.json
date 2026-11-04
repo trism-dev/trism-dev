@@ -2,7 +2,7 @@
   "canvas": [1920, 819],
   "background": "art/layers/background.png",
   "sprites": [
-    { "file": "art/layers/prism-sword.png", "crop": [395, 38, 328, 1272], "x": 1328, "y": 456, "nativeHeight": 72, "pixelScale": 4 },
-    { "file": "art/layers/spellblade-seated.png", "crop": [325, 79, 759, 1121], "x": 1388, "y": 360, "nativeHeight": 96, "pixelScale": 4 }
+    { "file": "art/layers/prism-sword.png", "crop": [0, 0, 28, 74], "x": 1324, "y": 448, "nativeHeight": 74, "pixelScale": 4 },
+    { "file": "art/layers/spellblade-seated.png", "crop": [0, 0, 88, 100], "x": 1372, "y": 344, "nativeHeight": 100, "pixelScale": 4 }
   ]
 }

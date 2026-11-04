@@ -29,9 +29,9 @@ window.drawWeather = (() => {
   ctx.save();ctx.beginPath();waterRuns.forEach(([x,y,rw,rh])=>ctx.rect(x*w,y*h,rw*w,rh*h));ctx.clip();
   for(const hit of impacts){const phase=(hit.phase+t*hit.speed)%1;if(phase<.72)continue;const age=(phase-.72)/.28,x=hit.x*w,y=hit.y*h,pixel=w/320,radius=(.6+age*2.1)*pixel;ctx.strokeStyle='rgba(191,220,235,'+((1-age)*.85)+')';ctx.lineWidth=pixel*.4;ctx.beginPath();ctx.ellipse(x,y,radius,radius*.25,0,0,Math.PI*2);ctx.stroke();if(age<.3){ctx.fillStyle='rgba(191,220,235,.8)';ctx.fillRect(x-pixel,y-pixel,pixel*.5,pixel*.5);ctx.fillRect(x+pixel,y-pixel*.6,pixel*.5,pixel*.5);}}
   ctx.restore();
-  const pixel=w/320,frame=Math.floor(t*3)%3;
+  const pixel=w/480,frame=Math.floor(t*3)%3;
   const steamFrames=[[[0,0],[0,-1],[-1,-2],[-1,-3],[0,-4]],[[0,0],[1,-1],[1,-2],[0,-3],[-1,-4],[-1,-5]],[[0,0],[0,-1],[-1,-2],[0,-3],[1,-4],[1,-5]]];
-  const mugX=.776*w,mugY=.642*h;
+  const mugX=1508/1920*w,mugY=532/819*h;
   steamFrames[frame].forEach(([x,y],i)=>{ctx.fillStyle=i<3?'rgba(183,192,190,.58)':'rgba(171,185,187,.32)';ctx.fillRect(Math.round(mugX/pixel+x)*pixel,Math.round(mugY/pixel+y)*pixel,pixel,pixel);});
   const angle=t*Math.PI/2; for(let i=0;i<2;i++){const x=(.878+Math.sin(angle+i*3.2)*.025+Math.sin(angle*2+i)*.007)*w,y=(.43+Math.cos(angle+i*2.7)*.055)*h;ctx.shadowColor='#f2cf87';ctx.shadowBlur=5;ctx.fillStyle='rgba(255,224,153,'+(.65+Math.sin(angle*2+i)*.25)+')';ctx.beginPath();ctx.arc(x,y,1.25,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}
  }
