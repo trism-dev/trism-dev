@@ -102,3 +102,10 @@ test('GIF contains 100 evenly timed 40ms frames', () => {
   assert.equal(delays.length, frames);
   assert(delays.every(delay => delay === 4));
 });
+
+test('approved helmet scene is preserved as the render source', async () => {
+  const { createHash } = await import('node:crypto');
+  const layout = JSON.parse(readFileSync(root + 'art/layers.json', 'utf8'));
+  assert.equal(layout.approvedScene, 'art/approved-scene.png');
+  assert.equal(createHash('sha256').update(readFileSync(root + layout.approvedScene)).digest('hex'), '48420ad667af5dbd2e6ce1e4806d6068eb6fc8eea58523ec8632d392dd3a19af');
+});
