@@ -31,7 +31,7 @@ window.drawWeather = (() => {
   ctx.restore();
   const pixel=w/320,frame=Math.floor(t*3)%3;
   const steamFrames=[[[0,0],[0,-1],[-1,-2],[-1,-3],[0,-4]],[[0,0],[1,-1],[1,-2],[0,-3],[-1,-4],[-1,-5]],[[0,0],[0,-1],[-1,-2],[0,-3],[1,-4],[1,-5]]];
-  const mugX=.773*w,mugY=.637*h;
+  const mugX=.776*w,mugY=.642*h;
   steamFrames[frame].forEach(([x,y],i)=>{ctx.fillStyle=i<3?'rgba(183,192,190,.58)':'rgba(171,185,187,.32)';ctx.fillRect(Math.round(mugX/pixel+x)*pixel,Math.round(mugY/pixel+y)*pixel,pixel,pixel);});
   const angle=t*Math.PI/2; for(let i=0;i<2;i++){const x=(.878+Math.sin(angle+i*3.2)*.025+Math.sin(angle*2+i)*.007)*w,y=(.43+Math.cos(angle+i*2.7)*.055)*h;ctx.shadowColor='#f2cf87';ctx.shadowBlur=5;ctx.fillStyle='rgba(255,224,153,'+(.65+Math.sin(angle*2+i)*.25)+')';ctx.beginPath();ctx.arc(x,y,1.25,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;}
  }

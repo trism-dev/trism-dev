@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { renderReadme, featured, root, latestSection } from '../scripts/build.mjs';
+import { renderReadme, featured, root, latestSection, plaque } from '../scripts/build.mjs';
 import { readFileSync, statSync } from 'node:fs';
 
 test('native README keeps readable content and supported motion fallback', () => {
@@ -31,6 +31,17 @@ test('navigation uses portfolio/repositories and every featured project has a pl
   }
 });
 
+test('shared prism plaques retain accessible names, safe labels and fixed geometry', () => {
+  const svg = plaque('a<&"repo');
+  assert(svg.includes('width="400" height="58"'));
+  assert(svg.includes('aria-label="a&lt;&amp;&quot;repo"'));
+  assert(svg.includes('url(#prism)'));
+  for (const color of ['#66dedb', '#b49ae9', '#f1c580']) assert(svg.includes(color));
+  assert(!svg.includes('<&"repo'));
+  assert(plaque('x'.repeat(60)).includes('x'.repeat(34) + '…'));
+  assert(renderReadme().includes('Prism Spellblade rests with a steaming mug'));
+});
+
 test('project plaques align outside native disclosure markers and navigation fills its row', () => {
   const output = renderReadme();
   assert.equal((output.match(/width="50%"/g) || []).length, 2);
@@ -51,6 +62,20 @@ test('exported images have valid headers, dimensions and bounded size', () => {
   assert.equal(gif.readUInt16LE(6), 1660);
   assert.equal(gif.readUInt16LE(8), 722);
   assert(statSync(root + 'assets/scene.gif').size < 8_000_000);
+});
+
+test('scene uses separate reusable sprites with an explicit integer pixel grid', () => {
+  const layout = JSON.parse(readFileSync(root + 'art/layers.json', 'utf8'));
+  assert.deepEqual(layout.canvas, [1920, 819]);
+  assert.equal(layout.sprites.length, 2);
+  assert.equal(layout.background, 'art/layers/background.png');
+  for (const sprite of layout.sprites) {
+    assert(readFileSync(root + sprite.file).subarray(1, 4).toString() === 'PNG');
+    assert(sprite.crop.every(Number.isInteger));
+    assert.equal(sprite.pixelScale, 4);
+    assert(Number.isInteger(sprite.nativeHeight) && sprite.nativeHeight >= 72);
+    assert.equal(sprite.y + sprite.nativeHeight * sprite.pixelScale, 744, 'Both sprites contact the floor');
+  }
 });
 
 test('GIF contains 100 evenly timed 40ms frames', () => {

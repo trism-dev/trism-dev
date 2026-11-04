@@ -13,11 +13,13 @@ export const escapeHtml = value => String(value).replace(/[&<>"']/g, c => ({ '&'
 export function plaque(label, width = 400) {
   const display = label.length > 35 ? label.slice(0, 34) + '…' : label;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="58" viewBox="0 0 ${width} 58" role="img" aria-label="${escapeHtml(label)}">
-<defs><linearGradient id="stone" x2="0" y2="1"><stop stop-color="#2b3d49"/><stop offset="1" stop-color="#1a2c38"/></linearGradient></defs>
-<path fill="url(#stone)" stroke="#728592" d="M.5.5h${width - 1}v57H.5z"/>
-<path fill="none" stroke="#101e29" stroke-width="3" d="M3 3h${width - 6}v52H3z"/><path fill="none" stroke="#4a6172" d="M4.5 4.5h${width - 9}v49H4.5z"/>
-<path fill="#a5b9c1" d="m14 26 3 3-3 3-3-3z m${width - 28} 0 3 3-3 3-3-3z"/>
-<text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-size="17" letter-spacing=".6" fill="#f0dfb8">${escapeHtml(display)}</text>
+<defs><linearGradient id="stone" x2="0" y2="1"><stop stop-color="#263445"/><stop offset="1" stop-color="#191f32"/></linearGradient><linearGradient id="prism" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#66dedb"/><stop offset=".52" stop-color="#b49ae9"/><stop offset="1" stop-color="#f1c580"/></linearGradient></defs>
+<path fill="url(#stone)" stroke="#78849e" d="M10 .5h${width - 20}l9.5 9.5v38L${width - 10} 57.5H10L.5 48V10z"/>
+<path fill="none" stroke="#43536c" d="M12 4.5h${width - 24}l7.5 7.5v34l-7.5 7.5H12L4.5 46V12z"/>
+<path fill="none" stroke="url(#prism)" d="M12 4.5h65M${width - 77} 53.5h65"/>
+<path fill="url(#prism)" stroke="#e2dbf3" stroke-width=".7" d="m24 17 9 12-9 12-9-12z"/><path fill="#eeedff" fill-opacity=".45" d="m24 17 0 24-9-12z"/><path fill="none" stroke="#f4f1ff" stroke-opacity=".7" stroke-width=".7" d="m15 29 9-3 9 3-9 3z"/>
+<path fill="none" stroke="#8b87af" d="M${width - 34} 29h12m-12 0 6-8"/><path fill="#72d8d9" d="m${width - 36} 26 3 3-3 3-3-3z"/><path fill="#b8a3e8" d="m${width - 21} 26 3 3-3 3-3-3z"/><path fill="#e9be81" d="m${width - 27} 18 3 3-3 3-3-3z"/>
+<text x="50%" y="50%" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-size="17" letter-spacing=".6" fill="#f0e8d6">${escapeHtml(display)}</text>
 </svg>\n`;
 }
 
@@ -25,7 +27,7 @@ export function renderReadme(latest = '<p>Latest public projects will appear her
   return `<!-- Built by scripts/build.mjs. Edit the generator, then rebuild. -->
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/scene.png">
-  <img src="assets/scene.gif" width="100%" alt="Tristan Morton. A faceless hooded traveler drinks tea on a sheltered bench beside a sword and warm lantern, overlooking a rainy blue city.">
+  <img src="assets/scene.gif" width="100%" alt="Tristan Morton. The faceless Prism Spellblade rests with a steaming mug on a sheltered bench, their prism sword leaning beside them, overlooking a rainy blue city under a warm lantern. No summoned magic.">
 </picture>
 
 <p>
