@@ -1,5 +1,6 @@
 {
   "canvas": [1920, 819],
+  "approvedScene": "art/approved-scene.png",
   "background": "art/layers/background.png",
   "sprites": [
     { "file": "art/layers/prism-sword.png", "crop": [395, 38, 328, 1272], "x": 1328, "y": 456, "nativeHeight": 72, "pixelScale": 4 },
