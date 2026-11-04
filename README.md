@@ -1,7 +1,7 @@
 <!-- Built by scripts/build.mjs. Edit the generator, then rebuild. -->
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="assets/scene.png">
-  <img src="assets/scene.gif" width="100%" alt="Tristan Morton. A faceless hooded traveler drinks tea on a sheltered bench beside a sword and warm lantern, overlooking a rainy blue city.">
+  <img src="assets/scene.gif" width="100%" alt="Tristan Morton. The faceless Prism Spellblade rests with a steaming mug on a sheltered bench, their prism sword leaning beside them, overlooking a rainy blue city under a warm lantern. No summoned magic.">
 </picture>
 
 <p>
