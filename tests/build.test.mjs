@@ -109,3 +109,8 @@ test('approved helmet scene is preserved as the render source', async () => {
   assert.equal(layout.approvedScene, 'art/approved-scene.png');
   assert.equal(createHash('sha256').update(readFileSync(root + layout.approvedScene)).digest('hex'), '48420ad667af5dbd2e6ce1e4806d6068eb6fc8eea58523ec8632d392dd3a19af');
 });
+
+test("refresh workflow targets the renamed profile repository", () => {
+  const workflow = readFileSync(root + ".github/workflows/profile.yml", "utf8");
+  assert(workflow.includes("github.repository == 'trism-prism/trism-prism'"));
+});

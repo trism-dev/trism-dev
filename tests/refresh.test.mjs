@@ -30,7 +30,7 @@ test('a new push to an older repo leads; creation and metadata edits do not affe
 });
 
 test('only public owned eligible repositories show, featured repositories remain eligible', () => {
-  const sample = [repo(1, { private: true }), repo(2, { archived: true }), repo(3, { fork: true }), repo(4, { owner: { login: 'elsewhere' } }), repo(5, { name: 'trism-dev', html_url: 'https://github.com/trism-prism/trism-dev' }), repo(6, { name: 'lore-tool-pages', html_url: 'https://github.com/trism-prism/lore-tool-pages' }), repo(7, { name: 'docs-qa-copilot', html_url: 'https://github.com/trism-prism/docs-qa-copilot' })];
+  const sample = [repo(1, { private: true }), repo(2, { archived: true }), repo(3, { fork: true }), repo(4, { owner: { login: 'elsewhere' } }), repo(5, { name: 'trism-prism', html_url: 'https://github.com/trism-prism/trism-prism' }), repo(6, { name: 'lore-tool-pages', html_url: 'https://github.com/trism-prism/lore-tool-pages' }), repo(7, { name: 'docs-qa-copilot', html_url: 'https://github.com/trism-prism/docs-qa-copilot' })];
   assert.deepEqual(selectLatest(sample).map(r => r.id), [7]);
   assert.deepEqual(selectLatest([]), []);
 });

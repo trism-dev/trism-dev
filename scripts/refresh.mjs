@@ -3,7 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { escapeHtml, latestSection, plaque, root } from './build.mjs';
 
 const owner = 'trism-prism';
-const excluded = new Set(['trism-dev', 'lore-tool-pages']);
+const excluded = new Set(['trism-prism', 'trism-dev', 'lore-tool-pages']);
 
 export async function fetchPublicRepos(fetcher = fetch) {
   const repos = [];
