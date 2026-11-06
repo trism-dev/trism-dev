@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from '
 import { pathToFileURL } from 'node:url';
 import { escapeHtml, latestSection, plaque, root } from './build.mjs';
 
-const owner = 'trism-dev';
+const owner = 'trism-prism';
 const excluded = new Set(['trism-dev', 'lore-tool-pages']);
 
 export async function fetchPublicRepos(fetcher = fetch) {
@@ -45,7 +45,7 @@ export function selectLatest(repos) {
 }
 
 export function renderLatest(repos) {
-  if (!repos.length) return '<p>No public projects to show yet. <a href="https://github.com/trism-dev?tab=repositories">Browse repositories</a>.</p>';
+  if (!repos.length) return '<p>No public projects to show yet. <a href="https://github.com/trism-prism?tab=repositories">Browse repositories</a>.</p>';
   return repos.map((repo, index) => `<h3><a href="${repo.html_url}"><img src="assets/latest-${index + 1}.svg" width="330" alt="${escapeHtml(repo.name)}"></a></h3>`).join('\n\n');
 }
 
