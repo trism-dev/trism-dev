@@ -31,7 +31,7 @@ jobs:
 
   refresh:
     needs: check
-    if: github.repository == 'trism-dev/trism-dev' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.repository == 'trism-prism/trism-prism' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write

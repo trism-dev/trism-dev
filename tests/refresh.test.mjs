@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { selectLatest, fetchPublicRepos, refresh, renderLatest } from '../scripts/refresh.mjs';
 import { renderReadme, latestSection } from '../scripts/build.mjs';
 
-const repo = (id, overrides = {}) => ({ id, name: `project-${id}`, html_url: `https://github.com/trism-dev/project-${id}`, owner: { login: 'trism-dev' }, private: false, visibility: 'public', fork: false, archived: false, created_at: '2025-01-01T00:00:00Z', pushed_at: '2025-01-01T00:00:00Z', description: 'A public project.', language: 'JavaScript', ...overrides });
+const repo = (id, overrides = {}) => ({ id, name: `project-${id}`, html_url: `https://github.com/trism-prism/project-${id}`, owner: { login: 'trism-prism' }, private: false, visibility: 'public', fork: false, archived: false, created_at: '2025-01-01T00:00:00Z', pushed_at: '2025-01-01T00:00:00Z', description: 'A public project.', language: 'JavaScript', ...overrides });
 const response = (repos, link = '') => new Response(JSON.stringify(repos), { headers: { link } });
 
 test('latest projects are name-only buttons ordered by code push recency', () => {
@@ -24,13 +24,13 @@ test('at most three projects with deterministic ties', () => {
 
 test('a new push to an older repo leads; creation and metadata edits do not affect recency', () => {
   const edited = repo(1, { created_at: '2020-01-01T00:00:00Z', pushed_at: '2026-11-03T12:00:00Z' });
-  const renamed = repo(2, { name: 'renamed', html_url: 'https://github.com/trism-dev/renamed', created_at: '2026-11-03T12:00:00Z', updated_at: '2026-11-03T13:00:00Z' });
+  const renamed = repo(2, { name: 'renamed', html_url: 'https://github.com/trism-prism/renamed', created_at: '2026-11-03T12:00:00Z', updated_at: '2026-11-03T13:00:00Z' });
   assert.deepEqual(selectLatest([renamed, edited]).map(r => r.id), [1, 2]);
   assert.deepEqual(selectLatest([repo(3, { pushed_at: null })]), []);
 });
 
 test('only public owned eligible repositories show, featured repositories remain eligible', () => {
-  const sample = [repo(1, { private: true }), repo(2, { archived: true }), repo(3, { fork: true }), repo(4, { owner: { login: 'elsewhere' } }), repo(5, { name: 'trism-dev', html_url: 'https://github.com/trism-dev/trism-dev' }), repo(6, { name: 'lore-tool-pages', html_url: 'https://github.com/trism-dev/lore-tool-pages' }), repo(7, { name: 'docs-qa-copilot', html_url: 'https://github.com/trism-dev/docs-qa-copilot' })];
+  const sample = [repo(1, { private: true }), repo(2, { archived: true }), repo(3, { fork: true }), repo(4, { owner: { login: 'elsewhere' } }), repo(5, { name: 'trism-prism', html_url: 'https://github.com/trism-prism/trism-prism' }), repo(6, { name: 'lore-tool-pages', html_url: 'https://github.com/trism-prism/lore-tool-pages' }), repo(7, { name: 'docs-qa-copilot', html_url: 'https://github.com/trism-prism/docs-qa-copilot' })];
   assert.deepEqual(selectLatest(sample).map(r => r.id), [7]);
   assert.deepEqual(selectLatest([]), []);
 });
@@ -64,7 +64,7 @@ test('all pages are fetched, including a short page with a next link', async () 
   const repos = await fetchPublicRepos(async url => {
     calls++;
     assert(new URL(url).searchParams.get('page') === String(calls));
-    return calls === 1 ? response(Array.from({ length: 100 }, (_, i) => repo(i))) : calls === 2 ? response([repo(100)], '<https://api.github.com/users/trism-dev/repos?page=3>; rel="next"') : response([repo(101)]);
+    return calls === 1 ? response(Array.from({ length: 100 }, (_, i) => repo(i))) : calls === 2 ? response([repo(100)], '<https://api.github.com/users/trism-prism/repos?page=3>; rel="next"') : response([repo(101)]);
   });
   assert.equal(calls, 3);
   assert.equal(repos.length, 102);

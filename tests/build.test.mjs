@@ -14,7 +14,7 @@ test('native README keeps readable content and supported motion fallback', () =>
   assert.equal((output.match(/<details/g) || []).length, 3);
   for (const p of featured) {
     assert(output.includes(p.text));
-    assert(output.includes(`https://github.com/trism-dev/${p.repo}`));
+    assert(output.includes(`https://github.com/trism-prism/${p.repo}`));
   }
   assert(!/<script|<style|<canvas|2027|internship availability|Matter:/.test(output));
   assert.equal(output, readme);
@@ -48,7 +48,7 @@ test('project plaques align outside native disclosure markers and navigation fil
   assert(!output.includes('</a>\n  <a'));
   assert([...output.matchAll(/<summary>(.*?)<\/summary>/gs)].every(match => !match[1].includes('<img')));
   for (const project of featured) {
-    assert(output.includes(`<a href="https://github.com/trism-dev/${project.repo}"><img src="assets/featured-${project.repo}.svg" width="330"`));
+    assert(output.includes(`<a href="https://github.com/trism-prism/${project.repo}"><img src="assets/featured-${project.repo}.svg" width="330"`));
   }
 });
 
@@ -108,4 +108,9 @@ test('approved helmet scene is preserved as the render source', async () => {
   const layout = JSON.parse(readFileSync(root + 'art/layers.json', 'utf8'));
   assert.equal(layout.approvedScene, 'art/approved-scene.png');
   assert.equal(createHash('sha256').update(readFileSync(root + layout.approvedScene)).digest('hex'), '48420ad667af5dbd2e6ce1e4806d6068eb6fc8eea58523ec8632d392dd3a19af');
+});
+
+test("refresh workflow targets the renamed profile repository", () => {
+  const workflow = readFileSync(root + ".github/workflows/profile.yml", "utf8");
+  assert(workflow.includes("github.repository == 'trism-prism/trism-prism'"));
 });
